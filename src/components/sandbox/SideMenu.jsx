@@ -1,13 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import { Layout, Menu } from 'antd';
 import { withRouter } from 'react-router';
+import axios from "axios";
 import {
+    HomeOutlined,
+    SafetyOutlined,
+    FileTextOutlined,
+    CloudOutlined,
+    ReconciliationOutlined,
     UploadOutlined,
     UserOutlined,
     VideoCameraOutlined,
 } from '@ant-design/icons';
 import './index.css'
-import { menuList } from './MenuList'
+// import { menuList } from './MenuList'
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 
@@ -32,35 +38,72 @@ const { Sider } = Layout;
 //     ])
 // ];
 
+//定义图标的映射数组
+const iconList = {
+    "/home": <HomeOutlined />,
+    "/user-manage": <UserOutlined />,
+    "/right-manage": <SafetyOutlined />,
+    "/news-manage": <FileTextOutlined />,
+    "/audit-manage": <ReconciliationOutlined />,
+    "/publish-manage": <CloudOutlined />
+}
 function SideMenu(props) {
-    const renderMenu = (menuList) => {
-        return menuList.map(item => {
-            if (item.children) {
-                return <SubMenu key={item.key} icon={item.icon} title={item.title}>
+    const [menu, setMenu] = useState([])
+    //json-server取渲染menu的数据
+    useEffect(() => {
+        axios.get("http://localhost:8000/rights?_embed=children").then(res => {
+            // console.log(res.data);
+            setMenu(res.data)
+        })
+    }, [])
+    //判断是否有子菜单
+    const checkPagePermission = (item) => {
+        //pagepermisson---菜单权限
+        return item.pagepermisson === 1;
+    }
+
+    const renderMenu = (menu) => {
+        return menu.map(item => {
+            //有子菜单
+            //判断是否有子菜单：item.children?.length>0
+            if (item.children?.length > 0 && checkPagePermission(item)) {
+                return <SubMenu key={item.key} icon={iconList[item.key]} title={item.title}>
                     {renderMenu(item.children)}
                 </SubMenu>
             }
-            return <Menu.Item
+            return checkPagePermission(item) && <Menu.Item
                 key={item.key}
-                icon={item.icon}
+                icon={iconList[item.key]}
                 onClick={() => {
-                    console.log(props);
+                    // 点击进行跳转--高阶组件---historyAPI
                     props.history.push(item.key)
                 }}
             >{item.title}</Menu.Item>
         })
     }
+    //路径--和选中菜单的哪项相匹配
+    const selectKeys = [props.location.pathname];
+    //路径的一级路由--和展开项匹配
+    const openKeys = ["/" + props.location.pathname.split("/")[1]];
     return (
         // Layout.Sider-->collapsible(是否可收起) collapsed(当前收起状态)
         <Sider trigger={null} collapsible collapsed={false}>
-            <div className="logo" >全球新闻发布管理系统</div>
-            <Menu
-                theme="dark"
-                mode="inline"
-                defaultSelectedKeys={['1']}
-            >
-                {renderMenu(menuList)}
-            </Menu>
+            {/* 弹性布局--只让sidemenu有滚动条 */}
+            <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
+                <div className="logo" >全球新闻发布管理系统</div>
+                <div style={{ flex: 1, overflow: "auto" }}>
+                    {/* defaultSelectedKeys--默认选中--[] */}
+                    {/* defaultOpenKeys--初始展开的菜单项 */}
+                    <Menu
+                        theme="dark"
+                        mode="inline"
+                        selectedKeys={selectKeys}
+                        defaultOpenKeys={openKeys}
+                    >
+                        {renderMenu(menu)}
+                    </Menu>
+                </div>
+            </div>
         </Sider>
     )
 }
