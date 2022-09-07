@@ -25,11 +25,9 @@ export default function RoleList() {
             title: '你确定要删除吗？',
             icon: <ExclamationCircleOutlined />,
             // content: 'Some descriptions',
-
             onOk() {
                 deleteMethod(item)
             },
-
             onCancel() {
                 // console.log('Cancel');
             },
