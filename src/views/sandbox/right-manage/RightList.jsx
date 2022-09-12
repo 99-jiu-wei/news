@@ -130,7 +130,8 @@ export default function RoleList() {
                 // pagination--配置分页--防止出现滚动条
                 pagination={{
                     pageSize: 5
-                }} />
+                }}
+            />
         </div>
     )
 }
