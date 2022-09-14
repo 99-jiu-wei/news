@@ -10,7 +10,7 @@
       "roleId": 1
     },
     {
-      "username": "铁锤111",
+      "username": "铁锤",
       "password": "123",
       "roleState": true,
       "default": false,
@@ -79,7 +79,6 @@
       "roleName": "超级管理员",
       "roleType": 1,
       "rights": [
-        "/home",
         "/user-manage",
         "/user-manage/add",
         "/user-manage/delete",
@@ -105,7 +104,8 @@
         "/publish-manage",
         "/publish-manage/unpublished",
         "/publish-manage/published",
-        "/publish-manage/sunset"
+        "/publish-manage/sunset",
+        "/home"
       ]
     },
     {

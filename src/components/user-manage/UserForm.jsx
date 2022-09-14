@@ -8,7 +8,48 @@ const UserForm = (props, ref) => {
     useEffect(() => {
         setIsDisable(props.updateDisable)
     }, [props.updateDisable])
+    //如果是超级管理员
+    const { roleId, region } = JSON.parse(localStorage.getItem("token"))
+    //枚举映射
+    const roleObj = {
+        "1": "superadmin",
+        "2": "admin",
+        "3": "editor"
+    }
+    //控制地区下拉菜单的禁用
+    const checkRegionDisabled = (item) => {
+        if (props.isUpdate) {//更新状态
+            if (roleObj[roleId] === "superadmin") {//超级管理员
+                return false//不禁用
+            } else {
+                return true
+            }
 
+        } else {
+            if (roleObj[roleId] === "superadmin") {//超级管理员
+                return false//不禁用
+            } else {//跟我管理的区域相同的不禁用
+                return item.value !== region
+            }
+        }
+    }
+    //控制角色下拉菜单的禁用
+    const checkRoleDisabled = (item) => {
+        if (props.isUpdate) {//更新状态
+            if (roleObj[roleId] === "superadmin") {//超级管理员
+                return false//不禁用
+            } else {
+                return true
+            }
+
+        } else {
+            if (roleObj[roleId] === "superadmin") {//超级管理员
+                return false//不禁用
+            } else {//管理员--只有编辑不禁用
+                return roleObj[item.id] !== "editor"
+            }
+        }
+    }
     return (
         <Form
             layout="vertical"
@@ -51,7 +92,10 @@ const UserForm = (props, ref) => {
             >
                 <Select disabled={isDisable}>
                     {props.regionList.map(item => {
-                        return <Option value={item.value} key={item.id}>{item.title}</Option>
+                        return <Option value={item.value}
+                            key={item.id}
+                            disabled={checkRegionDisabled(item)}
+                        >{item.title}</Option>
                     })}
                 </Select>
             </Form.Item>
@@ -78,7 +122,11 @@ const UserForm = (props, ref) => {
                     }
                 }}>
                     {props.roleList.map(item => {
-                        return <Option value={item.id} key={item.id}>{item.roleName}</Option>
+                        return <Option
+                            value={item.id}
+                            key={item.id}
+                            disabled={checkRoleDisabled(item)}
+                        >{item.roleName}</Option>
                     })}
                 </Select>
             </Form.Item>

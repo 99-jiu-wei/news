@@ -8,9 +8,7 @@ import {
     FileTextOutlined,
     CloudOutlined,
     ReconciliationOutlined,
-    UploadOutlined,
     UserOutlined,
-    VideoCameraOutlined,
 } from '@ant-design/icons';
 import './index.css'
 // import { menuList } from './MenuList'
@@ -59,9 +57,9 @@ function SideMenu(props) {
     //判断是否有子菜单
     const checkPagePermission = (item) => {
         //pagepermisson---菜单权限
-        return item.pagepermisson === 1;
+        return item.pagepermisson && rights.includes(item.key);
     }
-
+    const { role: { rights } } = JSON.parse(localStorage.getItem("token"))
     const renderMenu = (menu) => {
         return menu.map(item => {
             //有子菜单

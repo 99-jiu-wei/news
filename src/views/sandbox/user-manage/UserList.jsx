@@ -130,11 +130,28 @@ export default function UserList() {
             }
         }
     ]
+    const { roleId, region, username } = JSON.parse(localStorage.getItem("token"))
+
     useEffect(() => {
+        //枚举映射
+        const roleObj = {
+            "1": "superadmin",
+            "2": "admin",
+            "3": "editor"
+        }
         axios.get(`http://localhost:8000/users?_expand=role`).then(res => {
-            setDataSource(res.data)
+            const list = res.data;
+            //超级管理员显示全部，不是超级管理员就显示自己+与自己地域一样的区域编辑
+            setDataSource(roleObj[roleId] === "superadmin" ? list : [
+                ...list.filter(item => item.username === username),
+                ...list.filter(item => {
+                    return item.region === region && roleObj[item.roleId] === "editor"
+
+                })
+
+            ])
         })
-    }, [])
+    }, [roleId, region, username])
     useEffect(() => {
         axios.get(`http://localhost:8000/roles`).then(res => {
             setRoleList(res.data)
@@ -233,6 +250,7 @@ export default function UserList() {
                     roleList={roleList}
                     ref={updateForm}
                     updateDisable={updateDisable}
+                    isUpdate={true}
                 />
             </Modal>
         </div>
