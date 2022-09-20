@@ -49,7 +49,7 @@ function SideMenu(props) {
     const [menu, setMenu] = useState([])
     //json-server取渲染menu的数据
     useEffect(() => {
-        axios.get("http://localhost:8000/rights?_embed=children").then(res => {
+        axios.get("/rights?_embed=children").then(res => {
             // console.log(res.data);
             setMenu(res.data)
         })

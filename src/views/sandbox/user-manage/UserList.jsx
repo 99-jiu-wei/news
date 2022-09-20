@@ -37,13 +37,13 @@ export default function UserList() {
     }
     const deleteMethod = (item) => {
         setDataSource(dataSource.filter(data => data.id !== item.id));
-        axios.delete(`http://localhost:8000/users/${item.id}`)
+        axios.delete(`/users/${item.id}`)
     }
     const handleChange = (item) => {
         console.log(item);
         item.roleState = !item.roleState
         setDataSource([...dataSource])
-        axios.patch(`http://localhost:8000/users/${item.id}`, {
+        axios.patch(`/users/${item.id}`, {
             roleState: item.roleState
         })
     }
@@ -139,7 +139,7 @@ export default function UserList() {
             "2": "admin",
             "3": "editor"
         }
-        axios.get(`http://localhost:8000/users?_expand=role`).then(res => {
+        axios.get(`/users?_expand=role`).then(res => {
             const list = res.data;
             //超级管理员显示全部，不是超级管理员就显示自己+与自己地域一样的区域编辑
             setDataSource(roleObj[roleId] === "superadmin" ? list : [
@@ -153,12 +153,12 @@ export default function UserList() {
         })
     }, [roleId, region, username])
     useEffect(() => {
-        axios.get(`http://localhost:8000/roles`).then(res => {
+        axios.get(`/roles`).then(res => {
             setRoleList(res.data)
         })
     }, [])
     useEffect(() => {
-        axios.get(`http://localhost:8000/regions`).then(res => {
+        axios.get(`/regions`).then(res => {
             setRegionList(res.data)
         })
     }, [])
@@ -168,7 +168,7 @@ export default function UserList() {
             setIsAddVisible(false)
             addForm.current.resetFields();
             //post到后端，生成id（后端自增长），再设置 datasource,方便后面更新和删除
-            axios.post(`http://localhost:8000/users`, {
+            axios.post(`/users`, {
                 ...value,
                 "roleState": true,
                 "default": false,
@@ -200,7 +200,7 @@ export default function UserList() {
                 return item;
             }))
             // setUpdateDisable(!updateDisable)
-            axios.patch(`http://localhost:8000/users/${current.id}`, value)
+            axios.patch(`/users/${current.id}`, value)
         })
     }
     return (

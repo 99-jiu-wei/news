@@ -166,7 +166,7 @@ export default function Login(props) {
     };
     const onFinish = (values) => {
         // console.log(values);
-        axios.get(`http://localhost:8000/users?username=${values.username}&password=${values.password}&roleState=true&_expand=role`)
+        axios.get(`/users?username=${values.username}&password=${values.password}&roleState=true&_expand=role`)
             .then(res => {
                 // console.log(res.data);
                 if (res.data.length === 0) {

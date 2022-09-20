@@ -8,7 +8,7 @@ const { confirm } = Modal;
 export default function RoleList() {
     const [dataSource, setDataSource] = useState([])
     useEffect(() => {
-        axios.get("http://localhost:8000/rights?_embed=children").then(res => {
+        axios.get("/rights?_embed=children").then(res => {
             // 树形数据展示--children为空
             const list = res.data
             list.forEach(item => {
@@ -40,7 +40,7 @@ export default function RoleList() {
         //grade属性判断是一级还是二级
         if (item.grade === 1) {
             setDataSource(dataSource.filter(data => data.id !== item.id))
-            axios.delete(`http://localhost:8000/rights/${item.id}`)
+            axios.delete(`/rights/${item.id}`)
         } else {
             //rightId--上一级的id
             console.log(item.rightId);
@@ -53,7 +53,7 @@ export default function RoleList() {
             //...解构浅拷贝，不能直接用dataSource
             console.log(dataSource);
             setDataSource([...dataSource])
-            axios.delete(`http://localhost:8000/children/${item.id}`)
+            axios.delete(`/children/${item.id}`)
 
 
         }
@@ -113,11 +113,11 @@ export default function RoleList() {
         item.pagepermisson = item.pagepermisson === 1 ? 0 : 1;
         setDataSource([...dataSource])
         if (item.grade === 1) {
-            axios.patch(`http://localhost:8000/rights/${item.id}`, {
+            axios.patch(`/rights/${item.id}`, {
                 pagepermisson: item.pagepermisson
             })
         } else {
-            axios.patch(`http://localhost:8000/children/${item.id}`, {
+            axios.patch(`/children/${item.id}`, {
                 pagepermisson: item.pagepermisson
             })
         }
