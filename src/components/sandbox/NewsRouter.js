@@ -44,7 +44,7 @@ export default function NewsRouter() {
         "/user-manage/list": UserList,
         "/right-manage/role/list": RoleList,
         "/right-manage/right/list": RightList,
-        "/user-manage/add": NewsAdd,
+        "/news-manage/add": NewsAdd,
         "/news-manage/draft": NewsDraft,
         "/news-manage/category": NewsCategory,
         "/audit-manage/audit": Audit,
